@@ -1,0 +1,40 @@
+<html>
+    <body>
+        <h1>TODO List</h1>
+        <form method="POST", action="/append">
+            new TODO: <input type="text" name="message">
+            <input type="submit" value="Add">
+        </form>
+        <ul>
+          {% for item in todo_list %}
+            <li>
+              <input type="checkbox" id="{{ loop.index }}" name="todo_item" value="{{ item }}">
+              <label for="{{ loop.index }}">{{ item }}</label>
+              <button class="delete-btn" data-item="{{ item }}">削除</button>
+            </li>
+          {% endfor %}
+        </ul>
+    </body>
+    
+    <script>
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        
+          deleteButtons.forEach((button) => {
+            button.addEventListener('click', (event) => {
+              const item = event.target.dataset.item;
+              deleteTodoItem(item);
+            });
+          });
+        
+          function deleteTodoItem(item) {
+            fetch('/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `item=${encodeURIComponent(item)}`,
+            })
+          }
+    </script>
+
+</html>
